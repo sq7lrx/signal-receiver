@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: signal-receiver
+  labels:
+    app: signal-receiver
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: signal-receiver}
+  template:
+    metadata:
+      labels: {app: signal-receiver}
+    spec:
+      containers:
+        - name: signal-receiver
+          # pin the digest: ghcr.io/sq7lrx/signal-receiver:vX.Y.Z@sha256:...
+          image: ghcr.io/sq7lrx/signal-receiver:v0.1.1
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: SIGNAL_RPC_URL
+              value: http://signal-cli-rest-api.signal.svc.cluster.local:8081
+            - name: SIGNAL_NUMBERS
+              value: "+48123456789"   # your recipients
+          readinessProbe:
+            httpGet: {path: /, port: http}
+          livenessProbe:
+            httpGet: {path: /, port: http}
+          resources:
+            requests: {cpu: 10m, memory: 32Mi}
+            limits: {memory: 128Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: signal-receiver
+spec:
+  selector: {app: signal-receiver}
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
