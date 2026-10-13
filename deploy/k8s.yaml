@@ -8,7 +8,8 @@ spec:
   replicas: 1
   strategy: {type: Recreate}
   selector:
-    matchLabels: {app: signal-receiver}
+    matchLabels:
+      app: signal-receiver
   template:
     metadata:
       labels: {app: signal-receiver}
@@ -38,7 +39,8 @@ kind: Service
 metadata:
   name: signal-receiver
 spec:
-  selector: {app: signal-receiver}
+  selector:
+    app: signal-receiver
   ports:
     - name: http
       port: 8080
