@@ -60,6 +60,10 @@ podman run -p 8080:8080 \
 ```
 
 Published image: `ghcr.io/sq7lrx/signal-receiver` — tag per release, pin the digest.
+The package is **private**: your cluster needs ghcr pull credentials to pull it
+(on k3s, `/etc/rancher/k3s/registries.yaml` with `configs: ghcr.io: auth:` — see the
+[k3s private-registry docs](https://docs.k3s.io/installation/private-registry);
+on vanilla kubelet, an imagePullSecret).
 
 ## Kubernetes
 
